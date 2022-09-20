@@ -1,0 +1,11 @@
+# Summary of the tools used in class thus far
+
+Git is a version control system which stores and shares code between users.
+
+Github is a cloud-based hosting service which helps users manage their git repositories in a more organized and easier manner.
+
+Visual Studio (VS) code is a source-code editor that users can write and edit code in. Python is the programming language that is used to interpret the computer what to do. Conda is the package manager.
+
+Code can be moved out of VScode into Github through using Gitkraken. Gitkraken allows users to push and pull code from github repositories.
+
+Jupyter notebook is a web application that users can use to share and create documents that contain live code.
