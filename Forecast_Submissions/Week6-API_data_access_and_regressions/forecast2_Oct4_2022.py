@@ -118,7 +118,7 @@ print(f'The r^2 value is {r2}')
 #       was fitted with feature names, that's okay!
 x_sample = np.arange(0, 15000, 1000).reshape(-1, 1)
 
-# %%
+
 #TODO: Your code here
 y_predicted = full_regression.predict(x_sample)
 
