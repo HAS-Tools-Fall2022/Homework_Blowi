@@ -34,7 +34,7 @@ huc8 = gpd.read_file(
 # CRS as the `az` geodataframe
 
 # TODO: Your code here
-gages = None
+gages = gages.to_crs(az.crs)
 
 #%%
 # Step 2: The various polygons in the Arizona shapefile
@@ -46,9 +46,12 @@ gages = None
 # Your task here is to make the `az` variable be a 
 # geodataframe with only a single geometry.
 
-# TODO: Your code here
-az = None
+az.plot()
 
+#%%
+# TODO: Your code here
+az = az.dissolve()
+az.plot()
 
 #%%
 # Step 3: Pull out only the gages in Arizona from 
@@ -56,7 +59,7 @@ az = None
 # In GIS-language this is called "clipping" 
 
 # TODO: Your code here
-az_gages = None
+az_gages = gages.clip(az)
 
 # %%
 # Step 4: Make a plot showing Arizona in "lightgrey"
@@ -71,7 +74,9 @@ az_gages = None
 #       easier to see them.
 
 # TODO: Your code here
-ax = None
+ax = az.plot(color='lightgrey',edgecolor='white')
+az_gages.plot(ax=ax, color='crimson', markersize=3)
+plt.title('Gages II data in Arizona')
 
 # %%
 # Step 5: I also gave you a dataset of watershed
@@ -91,7 +96,10 @@ ax = None
 #       inside of your second plot command.
 
 # TODO: Your code here
-ax = None
+ax = huc8.plot(color='lightgrey',edgecolor='white')
+az.plot(ax=ax, color='none', edgecolor = 'black', markersize=3)
+az_gages.plot(ax=ax, color = 'crimson', markersize = 3)
+plt.title('Gages II data in Arizona')
 
 #%%
 # Step 6:  For this step, Iwant you to plot the location
@@ -105,10 +113,13 @@ ax = None
 # The resulting plot should put a big star where the 
 # gage location is. All other gages in Arizona will
 # still appear as dots.
+az_gages.head()
+
+#%%
 name = "VERDE RIVER NEAR CAMP VERDE, AZ"
 # TODO: Your code here
-is_the_gage = None
-verde_gage = None
+is_the_gage = az_gages[az_gages['STANAME'] == name]
+verde_gage = is_the_gage
 
 # Plotting code, you should not have to modify
 ax = huc8.plot(color='lightgrey')
@@ -166,7 +177,7 @@ begin_date = '2012-10-01'
 end_date = '2022-09-30'
 
 # TODO: Your code here
-station_id = None
+station_id = verde_gage['STAID']
 
 site = station_id.values[0]
 verde_df = open_usgs_data(site, begin_date, end_date)
@@ -181,7 +192,20 @@ verde_df.head()
 # streamflows by printing them out.
 
 # TODO: Your code here
-station_name = None
+station_name = "RAMSEY CANYON NR SIERRA VISTA, AZ."
+
+is_the_gage_ramsey = az_gages[az_gages['STANAME'] == station_name]
+station_id_ramsey = is_the_gage_ramsey['STAID']
+
+site_ramsey = station_id_ramsey.values[0]
+ramsey_df = open_usgs_data(site, begin_date, end_date)
+ramsey_df.head()
+#%%
+verde_mean = verde_df['streamflow'].mean()
+ramsey_mean = ramsey_df['streamflow'].mean()
+
+print('Mean streamflow for Verde:', verde_mean, 'Mean streamflow for Ramsey Canyon:', ramsey_mean)
+
 
 #%%
 # Step 10: From our original plots of the spatial
@@ -208,7 +232,11 @@ number_gages_in_huc = []
 for i, huc in huc8.iterrows():
     print(i, huc['name'])
     # TODO: Your code here
-    clipped_gages = None
+    clipped_gages = az_gages.clip(huc.geometry)
+    number_of_gages = len(clipped_gages)
+    number_gages_in_huc.append(number_of_gages)
+
+
 
 # TODO: Your code here
 
@@ -219,6 +247,8 @@ for i, huc in huc8.iterrows():
 # outline on top
 
 # TODO: Your code here
-
+huc8['STANAME']=huc8.geometry.area
+ax = huc8.plot(column='STANAME', legend = True, cmap = 'Blues')
+az.plot(ax=ax,color = 'none', edgecolor = 'black')
 # %%
 # CONGRATULATIONS, you're finished!
